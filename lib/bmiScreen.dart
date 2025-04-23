@@ -1,7 +1,49 @@
 import 'package:flutter/material.dart';
 
-class MyBMI extends StatelessWidget {
+class MyBMI extends StatefulWidget {
   const MyBMI({super.key});
+
+  @override
+  State<MyBMI> createState() => _MyBMIState();
+}
+
+class _MyBMIState extends State<MyBMI> {
+  String bmiResult = '0.0';
+  String bmiStatus = '';
+  TextEditingController height = TextEditingController();
+  TextEditingController weight = TextEditingController();
+  TextEditingController age = TextEditingController();
+
+  void calculateBMI() {
+    try {
+      double heightInCm = double.parse(height.text);
+      double weightInKg = double.parse(weight.text);
+
+      double heightInMeters = heightInCm / 100;
+      double bmi = weightInKg / (heightInMeters * heightInMeters);
+
+      String status;
+      if (bmi < 18.5) {
+        status = "Underweight";
+      } else if (bmi < 25) {
+        status = "Healthy";
+      } else if (bmi < 30) {
+        status = "Overweight";
+      } else {
+        status = "Obese";
+      }
+
+      setState(() {
+        bmiResult = bmi.toStringAsFixed(1);
+        bmiStatus = status;
+      });
+    } catch (e) {
+      setState(() {
+        bmiResult = "0.0";
+        bmiStatus = "Invalid input";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +61,7 @@ class MyBMI extends StatelessWidget {
                   height: 250,
                 ),
                 Text(
-                  "20.4",
+                  bmiResult,
                   style: TextStyle(
                       fontFamily: 'Manrope',
                       fontWeight: FontWeight.w700,
@@ -32,7 +74,7 @@ class MyBMI extends StatelessWidget {
               height: 15,
             ),
             Text(
-              "Healthy",
+              bmiStatus,
               style: TextStyle(
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
@@ -105,6 +147,8 @@ class MyBMI extends StatelessWidget {
                     SizedBox(
                       width: 50,
                       child: TextField(
+                        controller: age,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -114,8 +158,8 @@ class MyBMI extends StatelessWidget {
                           hintText: '12',
                           hintStyle: TextStyle(
                               fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade600,
                               fontFamily: 'Manrope'),
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -144,6 +188,8 @@ class MyBMI extends StatelessWidget {
                     SizedBox(
                       width: 50,
                       child: TextField(
+                        controller: height,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -153,8 +199,8 @@ class MyBMI extends StatelessWidget {
                           hintText: '12',
                           hintStyle: TextStyle(
                               fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade600,
                               fontFamily: 'Manrope'),
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -183,6 +229,8 @@ class MyBMI extends StatelessWidget {
                     SizedBox(
                       width: 50,
                       child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: weight,
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -192,8 +240,8 @@ class MyBMI extends StatelessWidget {
                           hintText: '12',
                           hintStyle: TextStyle(
                               fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade600,
                               fontFamily: 'Manrope'),
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -217,7 +265,7 @@ class MyBMI extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0XFF89CFC7),
                       foregroundColor: Colors.white),
-                  onPressed: () {},
+                  onPressed: calculateBMI,
                   child: Text(
                     "Calculate BMI",
                     style: TextStyle(fontSize: 20),
